@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Watermark Tool — Live Demo</title>
+<style>
+  :root { --bg:#0b1020; --panel:#141a30; --border:#26304f; --accent:#4f8cff; --text:#e6eaf5; --muted:#9aa3bf; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:"Segoe UI",system-ui,sans-serif; min-height:100vh; }
+  .wrap { max-width:1000px; margin:0 auto; padding:2rem 1.5rem; }
+  h1 { font-size:1.8rem; margin-bottom:.3rem; }
+  p.sub { color:var(--muted); margin-bottom:1.6rem; }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:1.4rem; margin-bottom:1.2rem; }
+  .row { display:flex; gap:1rem; flex-wrap:wrap; }
+  .col { flex:1; min-width:280px; }
+  label { display:block; font-size:.85rem; color:var(--muted); margin:.7rem 0 .3rem; }
+  input[type=text], input[type=number], select {
+    width:100%; background:#0d1226; color:var(--text); border:1px solid var(--border);
+    border-radius:8px; padding:.5rem .7rem; font-size:.95rem;
+  }
+  input[type=file] { width:100%; background:#0d1226; border:1px dashed var(--border);
+    border-radius:8px; padding:.7rem; color:var(--muted); font-size:.9rem; cursor:pointer; }
+  input[type=range] { width:100%; accent-color:var(--accent); }
+  .btn { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:.6rem 1.2rem;
+        font-size:.95rem; cursor:pointer; margin-top:1rem; font-weight:600; }
+  .btn:hover { opacity:.9; }
+  .btn.ghost { background:transparent; border:1px solid var(--border); color:var(--text); }
+  canvas { width:100%; border:1px solid var(--border); border-radius:10px; background:#000; }
+  .preview-box { min-height:220px; display:flex; align-items:center; justify-content:center; }
+  .hint { color:var(--muted); font-size:.85rem; margin-top:.5rem; }
+  a.back { color:var(--accent); text-decoration:none; font-size:.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="https://karansaini260.github.io/">← Back to projects hub</a>
+  <h1>💧 Image Watermark Tool</h1>
+  <p class="sub">Client-side watermarking — your image never leaves the browser. Live demo of the <a style="color:var(--accent)" href="https://github.com/Karansaini260/Image-Watermark-App">Image-Watermark-App</a> repo.</p>
+
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <label>1. Upload an image</label>
+        <input type="file" id="imageInput" accept="image/*">
+        <label>2. Watermark type</label>
+        <select id="typeSelect">
+          <option value="text">Text watermark</option>
+          <option value="logo">Logo watermark</option>
+        </select>
+        <div id="textRow">
+          <label>Text</label>
+          <input type="text" id="textInput" value="KARANDEep ©">
+        </div>
+        <div id="logoRow" style="display:none">
+          <label>Logo image (png)</label>
+          <input type="file" id="logoInput" accept="image/*">
+        </div>
+        <label>Position</label>
+        <select id="posSelect">
+          <option value="center">Center</option>
+          <option value="tl">Top-left</option>
+          <option value="tr">Top-right</option>
+          <option value="bl">Bottom-left</option>
+          <option value="br">Bottom-right</option>
+          <option value="tile">Tile / repeat</option>
+        </select>
+        <label>Size: <span id="sizeVal">40</span>%</label>
+        <input type="range" id="sizeRange" min="10" max="100" value="40">
+        <label>Opacity: <span id="opacVal">60</span>%</label>
+        <input type="range" id="opacRange" min="5" max="100" value="60">
+        <div class="row">
+          <button class="btn" id="applyBtn">Apply watermark</button>
+          <button class="btn ghost" id="downloadBtn">⬇ Download</button>
+        </div>
+      </div>
+      <div class="col">
+        <label>Preview</label>
+        <div class="preview-box"><canvas id="canvas" width="800" height="450"></canvas></div>
+        <p class="hint" id="hint">Upload an image, choose options, hit Apply.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let img = null;
+let logoImg = null;
+
+const imgInput = document.getElementById('imageInput');
+imgInput.addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    img = new Image();
+    img.onload = () => draw();
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(f);
+});
+
+const logoInput = document.getElementById('logoInput');
+logoInput.addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    logoImg = new Image();
+    logoImg.src = ev.target.result;
+  };
+  reader.readAsDataURL(f);
+});
+
+document.getElementById('typeSelect').addEventListener('change', e => {
+  const isText = e.target.value === 'text';
+  document.getElementById('textRow').style.display = isText ? 'block' : 'none';
+  document.getElementById('logoRow').style.display = isText ? 'none' : 'block';
+});
+document.getElementById('sizeRange').addEventListener('input', e => document.getElementById('sizeVal').textContent = e.target.value);
+document.getElementById('opacRange').addEventListener('input', e => document.getElementById('opacVal').textContent = e.target.value);
+document.getElementById('applyBtn').addEventListener('click', draw);
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const a = document.createElement('a');
+  a.download = 'watermarked.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+});
+
+function draw() {
+  if (!img) { document.getElementById('hint').textContent = 'Please upload an image first.'; return; }
+  canvas.width = img.width; canvas.height = img.height;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(img, 0, 0);
+  ctx.globalAlpha = parseFloat(document.getElementById('opacRange').value) / 100;
+  const size = parseFloat(document.getElementById('sizeRange').value) / 100;
+  const pos = document.getElementById('posSelect').value;
+  const type = document.getElementById('typeSelect').value;
+
+  if (type === 'text') {
+    const fontPx = Math.max(14, Math.round(img.width * size * 0.08));
+    ctx.font = `bold ${fontPx}px "Segoe UI", sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,1)';
+    ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+    ctx.lineWidth = Math.max(2, fontPx / 12);
+    const text = document.getElementById('textInput').value || 'WATERMARK';
+    const tw = ctx.measureText(text).width;
+    place(fontPx, tw, (x, y) => { ctx.strokeText(text, x, y); ctx.fillText(text, x, y); },
+          () => { // tile
+            const rows = Math.ceil(canvas.height / (fontPx * 2.2));
+            const cols = Math.ceil(canvas.width / (tw * 1.4));
+            for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+              const x = c * tw * 1.4, y = r * fontPx * 2.2;
+              ctx.strokeText(text, x, y); ctx.fillText(text, x, y);
+            }
+          });
+  } else {
+    if (!logoImg) { document.getElementById('hint').textContent = 'Please upload a logo image first.'; return; }
+    const lw = img.width * size * 0.3;
+    const lh = lw * (logoImg.height / logoImg.width);
+    place(lh, lw, (x, y) => ctx.drawImage(logoImg, x, y, lw, lh),
+          () => {
+            const cols = Math.ceil(canvas.width / (lw * 1.3));
+            const rows = Math.ceil(canvas.height / (lh * 1.3));
+            for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++)
+              ctx.drawImage(logoImg, c * lw * 1.3, r * lh * 1.3, lw, lh);
+          });
+  }
+  ctx.globalAlpha = 1;
+  document.getElementById('hint').textContent = 'Done! Use Download to save the watermarked image.';
+}
+
+function place(h, w, single, tile) {
+  const pos = document.getElementById('posSelect').value;
+  const pad = 30;
+  let x, y;
+  if (pos === 'tile') { tile(); return; }
+  if (pos === 'center') { x = (canvas.width - w) / 2; y = (canvas.height - h) / 2; }
+  else if (pos === 'tl') { x = pad; y = pad + h; }
+  else if (pos === 'tr') { x = canvas.width - w - pad; y = pad + h; }
+  else if (pos === 'bl') { x = pad; y = canvas.height - pad; }
+  else { x = canvas.width - w - pad; y = canvas.height - pad; }
+  single(x, y);
+}
+</script>
+</body>
+</html>
