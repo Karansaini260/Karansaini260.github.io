@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karandeep Singh — Data Scientist · AI/ML · Live Projects Hub</title>
+<style>
+  :root {
+    --bg: #0b1020; --panel: #141a30; --panel2: #1a2140; --accent: #4f8cff;
+    --green: #34d399; --text: #e6eaf5; --muted: #9aa3bf; --border: #26304f;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+  header { text-align: center; margin-bottom: 2.5rem; }
+  h1 { font-size: 2.4rem; background: linear-gradient(90deg,#4f8cff,#34d399);
+       -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .tagline { color: var(--muted); margin-top: .4rem; font-size: 1.05rem; }
+  .badges { margin-top: 1.1rem; display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
+  .badge { background: var(--panel); border: 1px solid var(--border); padding: .3rem .8rem;
+           border-radius: 999px; font-size: .82rem; color: var(--muted); }
+  .badge.live { border-color: #14532d; color: var(--green); background: rgba(52,211,153,.08); }
+
+  .section-title { font-size: 1.25rem; margin: 2.2rem 0 1rem; display: flex; align-items: center; gap: .5rem; }
+  .section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.1rem; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.2rem 1.3rem; display: flex; flex-direction: column; gap: .5rem;
+    transition: transform .15s, border-color .15s;
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .card h3 { font-size: 1.05rem; }
+  .card p { color: var(--muted); font-size: .88rem; flex: 1; }
+  .card .tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+  .tag { background: var(--panel2); border: 1px solid var(--border); border-radius: 6px;
+         padding: .12rem .5rem; font-size: .72rem; color: var(--muted); }
+  .links { display: flex; gap: .8rem; margin-top: .4rem; }
+  .links a { color: var(--accent); text-decoration: none; font-size: .86rem; font-weight: 600; }
+  .links a:hover { text-decoration: underline; }
+  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+              background: var(--green); margin-right: .4rem; box-shadow: 0 0 8px var(--green); }
+
+  footer { margin-top: 3rem; text-align: center; color: var(--muted); font-size: .85rem; }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>👨‍💻 Karandeep Singh</h1>
+    <p class="tagline">Data Scientist · AI / Machine Learning Engineer · Building intelligent systems</p>
+    <div class="badges">
+      <span class="badge">🐍 Python</span>
+      <span class="badge">🔥 PyTorch / TensorFlow</span>
+      <span class="badge">👁 OpenCV</span>
+      <span class="badge">🤖 Generative AI</span>
+      <span class="badge live">🟢 LIVE projects below</span>
+    </div>
+  </header>
+
+  <div class="section-title">🚀 LIVE — Deployed &amp; Running</div>
+  <div class="grid">
+    <div class="card">
+      <h3><span class="live-dot"></span>PAN Card Tampering Detection</h3>
+      <p>Detects tampering in PAN card images using OpenCV + SSIM. Live on GitHub Pages.</p>
+      <div class="tags"><span class="tag">OpenCV</span><span class="tag">Python</span><span class="tag">SSIM</span></div>
+      <div class="links">
+        <a href="https://karansaini260.github.io/PAN-Card-Tampering-Detection/">Live demo ↗</a>
+        <a href="https://github.com/Karansaini260/PAN-Card-Tampering-Detection">Repo</a>
+      </div>
+    </div>
+    <div class="card">
+      <h3><span class="live-dot"></span>Face Swap App</h3>
+      <p>Face-swap experiments with OpenCV + dlib, wrapped in a web app. Live on GitHub Pages.</p>
+      <div class="tags"><span class="tag">OpenCV</span><span class="tag">dlib</span><span class="tag">Flask</span></div>
+      <div class="links">
+        <a href="https://karansaini260.github.io/Face-Swap-App/">Live ↗</a>
+        <a href="https://github.com/Karansaini260/Face-Swap-App">Repo</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">📦 Ready to Deploy (enable Pages in Settings → 1 click)</div>
+  <div class="grid">
+    <div class="card">
+      <h3>Image Watermark App</h3>
+      <p>Upload an image, add text/logo watermark, control position &amp; opacity, download. Flask app — deploy to Render/Railway or Pages.</p>
+      <div class="tags"><span class="tag">Flask</span><span class="tag">HTML/JS</span></div>
+      <div class="links"><a href="https://github.com/Karansaini260/Image-Watermark-App">Repo</a></div>
+    </div>
+    <div class="card">
+      <h3>Angular To-Do List</h3>
+      <p>Feature-rich to-do app (Angular 15 + TypeScript + Bootstrap). Build &amp; push to gh-pages for a live demo.</p>
+      <div class="tags"><span class="tag">Angular</span><span class="tag">TypeScript</span><span class="tag">Bootstrap</span></div>
+      <div class="links"><a href="https://github.com/Karansaini260/angular-todo-list">Repo</a></div>
+    </div>
+    <div class="card">
+      <h3>NSE Stock Screener</h3>
+      <p>Real-time Nifty 100 screener — SMMA crossovers + ML filter. Desktop app (Tkinter).</p>
+      <div class="tags"><span class="tag">Python</span><span class="tag">Tkinter</span><span class="tag">ML</span></div>
+      <div class="links"><a href="https://github.com/Karansaini260/nse-screening">Repo</a></div>
+    </div>
+  </div>
+
+  <div class="section-title">🧠 Machine Learning &amp; AI Projects</div>
+  <div class="grid">
+    <div class="card">
+      <h3>RSNA Knee Abnormality Detection</h3>
+      <p>Kaggle framework — 12 knee abnormalities from MRI + radiology reports (multimodal).</p>
+      <div class="tags"><span class="tag">PyTorch</span><span class="tag">pydicom</span><span class="tag">NLP</span></div>
+      <div class="links"><a href="https://github.com/Karansaini260/RSNA-Knee-Abnormality-Detection">Repo</a></div>
+    </div>
+    <div class="card">
+      <h3>Gemini AI App</h3>
+      <p>Streamlit chat app powered by Google Gemini. Deploy to Streamlit Cloud in 2 clicks.</p>
+      <div class="tags"><span class="tag">Streamlit</span><span class="tag">Gemini</span></div>
+      <div class="links"><a href="https://github.com/Karansaini260/Gemini-AI-App">Repo</a></div>
+    </div>
+    <div class="card">
+      <h3>Face Detection App</h3>
+      <p>Real-time face detection with OpenCV Haar cascades.</p>
+      <div class="tags"><span class="tag">OpenCV</span><span class="tag">Python</span></div>
+      <div class="links"><a href="https://github.com/Karansaini260/Face-Detection-App">Repo</a></div>
+    </div>
+    <div class="card">
+      <h3>Mario Python Game</h3>
+      <p>Tile-map platformer with custom physics engine &amp; demo AI (5 unit tests).</p>
+      <div class="tags"><span class="tag">Python</span><span class="tag">pygame</span></div>
+      <div class="links"><a href="https://github.com/Karansaini260/Mario-Python-Game">Repo</a></div>
+    </div>
+    <div class="card">
+      <h3>Trader Behavior Analysis</h3>
+      <p>Deep EDA of trader historical data — profitability, risk, patterns + PDF report.</p>
+      <div class="tags"><span class="tag">Pandas</span><span class="tag">EDA</span></div>
+      <div class="links"><a href="https://github.com/Karansaini260/Trader-Behavior-Analysis">Repo</a></div>
+    </div>
+    <div class="card">
+      <h3>Credit Card Fraud Detection</h3>
+      <p>Fraud detection on imbalanced anonymised transactions (SMOTE, precision/recall).</p>
+      <div class="tags"><span class="tag">scikit-learn</span><span class="tag">ML</span></div>
+      <div class="links"><a href="https://github.com/Karansaini260/Credit-Card-Fraud-Detection">Repo</a></div>
+    </div>
+  </div>
+
+  <div class="section-title">🖥 Computer Vision &amp; Deep Learning</div>
+  <div class="grid">
+    <div class="card"><h3>Medical Imaging GAN</h3><p>GANs generating synthetic X-rays/MRIs + Streamlit app.</p><div class="tags"><span class="tag">GAN</span><span class="tag">Streamlit</span></div><div class="links"><a href="https://github.com/Karansaini260/Medical-Imaging-GAN">Repo</a></div></div>
+    <div class="card"><h3>Stable Diffusion Generator</h3><p>Text→image diffusion pipeline + marketing front-end.</p><div class="tags"><span class="tag">Diffusion</span><span class="tag">Streamlit</span></div><div class="links"><a href="https://github.com/Karansaini260/Stable-Diffusion-Image-Generator">Repo</a></div></div>
+    <div class="card"><h3>Face Recognition India</h3><p>MTCNN + Inception-ResNet face recognition + Flask.</p><div class="tags"><span class="tag">MTCNN</span><span class="tag">Flask</span></div><div class="links"><a href="https://github.com/Karansaini260/Face-Recognition-India">Repo</a></div></div>
+    <div class="card"><h3>Crop Disease Classification</h3><p>CNN classifying crop diseases from field images.</p><div class="tags"><span class="tag">CNN</span><span class="tag">Keras</span></div><div class="links"><a href="https://github.com/Karansaini260/Crop-Disease-Classification">Repo</a></div></div>
+    <div class="card"><h3>Traffic Monitoring</h3><p>Object detection on Dhaka traffic video.</p><div class="tags"><span class="tag">Detection</span></div><div class="links"><a href="https://github.com/Karansaini260/Traffic-Monitoring-Object-Detection">Repo</a></div></div>
+    <div class="card"><h3>Wildlife Conservation CNN</h3><p>CV for wildlife conservation (WorldQuant University).</p><div class="tags"><span class="tag">CNN</span><span class="tag">CV</span></div><div class="links"><a href="https://github.com/Karansaini260/Wildlife-Conservation-CNN">Repo</a></div></div>
+    <div class="card"><h3>Intel Image Classification</h3><p>CNN on 6 scene classes.</p><div class="tags"><span class="tag">CNN</span></div><div class="links"><a href="https://github.com/Karansaini260/Intel-Image-Classification">Repo</a></div></div>
+    <div class="card"><h3>Bird Species Prediction</h3><p>CNN predicting bird species; hyperparameter tuning.</p><div class="tags"><span class="tag">CNN</span></div><div class="links"><a href="https://github.com/Karansaini260/Bird-Species-Prediction">Repo</a></div></div>
+    <div class="card"><h3>Vehicle Counting &amp; Detection</h3><p>Counts/detects vehicles in video (OpenCV).</p><div class="tags"><span class="tag">OpenCV</span></div><div class="links"><a href="https://github.com/Karansaini260/Vehicle-Counting-Detection">Repo</a></div></div>
+    <div class="card"><h3>Plant Disease Prediction</h3><p>CNN predicting plant disease from leaf images.</p><div class="tags"><span class="tag">CNN</span></div><div class="links"><a href="https://github.com/Karansaini260/Plant-Disease-Prediction">Repo</a></div></div>
+    <div class="card"><h3>Traffic Sign Classification</h3><p>CNN for traffic signs (TensorFlow/Keras).</p><div class="tags"><span class="tag">Keras</span></div><div class="links"><a href="https://github.com/Karansaini260/Traffic-Sign-classification">Repo</a></div></div>
+    <div class="card"><h3>Text Extraction from Images</h3><p>OCR + OpenCV enhancement of extracted text.</p><div class="tags"><span class="tag">OCR</span><span class="tag">OpenCV</span></div><div class="links"><a href="https://github.com/Karansaini260/Text-Extraction-from-Image">Repo</a></div></div>
+    <div class="card"><h3>Dog Breed Prediction</h3><p>CNN predicting dog breeds.</p><div class="tags"><span class="tag">CNN</span></div><div class="links"><a href="https://github.com/Karansaini260/Dog-Breed-Prediction">Repo</a></div></div>
+    <div class="card"><h3>Sentiment Analysis</h3><p>Text sentiment classification (scikit-learn).</p><div class="tags"><span class="tag">NLP</span></div><div class="links"><a href="https://github.com/Karansaini260/Sentiment-Analysis">Repo</a></div></div>
+  </div>
+
+  <div class="section-title">🌐 Web / C# / Other</div>
+  <div class="grid">
+    <div class="card"><h3>Chatbot C#</h3><p>WinForms chatbot with 40+ AIML knowledge files.</p><div class="tags"><span class="tag">C#</span><span class="tag">AIML</span></div><div class="links"><a href="https://github.com/Karansaini260/Chatbot-C-">Repo</a></div></div>
+    <div class="card"><h3>C# Console Games</h3><p>Snake, Tetris, Ping-Pong, Tron.</p><div class="tags"><span class="tag">C#</span></div><div class="links"><a href="https://github.com/Karansaini260/CSharp-Console-Games">Repo</a></div></div>
+    <div class="card"><h3>Angular To-Do List</h3><p>Angular 15 + TypeScript + Bootstrap.</p><div class="tags"><span class="tag">Angular</span></div><div class="links"><a href="https://github.com/Karansaini260/angular-todo-list">Repo</a></div></div>
+    <div class="card"><h3>NodeJS Learning</h3><p>6 verified Node.js exercises.</p><div class="tags"><span class="tag">Node.js</span></div><div class="links"><a href="https://github.com/Karansaini260/NodeJS-Learning">Repo</a></div></div>
+    <div class="card"><h3>Partjo — Next.js</h3><p>Next.js App Router starter.</p><div class="tags"><span class="tag">Next.js</span></div><div class="links"><a href="https://github.com/Karansaini260/Partjo">Repo</a></div></div>
+  </div>
+
+  <footer>
+    <p>Built with ❤️ by Karandeep Singh · <a href="https://github.com/Karansaini260">github.com/Karansaini260</a></p>
+  </footer>
+</div>
+</body>
+</html>
