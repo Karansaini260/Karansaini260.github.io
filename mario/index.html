@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mario Python Game — Play in Browser</title>
+<style>
+  :root { --bg:#0b1020; --panel:#141a30; --border:#26304f; --accent:#4f8cff; --text:#e6eaf5; --muted:#9aa3bf; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--bg); color:var(--text); font-family:"Segoe UI",system-ui,sans-serif; min-height:100vh; }
+  .wrap { max-width:980px; margin:0 auto; padding:2rem 1.5rem; }
+  h1 { font-size:1.8rem; margin-bottom:.3rem; }
+  p.sub { color:var(--muted); margin-bottom:1.2rem; }
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:1.2rem; margin-bottom:1rem; }
+  canvas { width:100%; border:1px solid var(--border); border-radius:10px; background:#87ceeb; display:block; }
+  .controls { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; margin-top:1rem; }
+  .btn { background:var(--accent); color:#fff; border:none; border-radius:8px; padding:.55rem 1.1rem; font-size:.9rem; cursor:pointer; font-weight:600; }
+  .btn.ghost { background:#1a2140; border:1px solid var(--border); color:var(--text); }
+  .hud { font-size:.9rem; color:var(--muted); }
+  .hud b { color:var(--text); }
+  .keys { color:var(--muted); font-size:.8rem; margin-top:.6rem; }
+  a.back { color:var(--accent); text-decoration:none; font-size:.9rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="https://karansaini260.github.io/">← Back to projects hub</a>
+  <h1>🍄 Mario — Web Edition</h1>
+  <p class="sub">Live browser port of the <a style="color:var(--accent)" href="https://github.com/Karansaini260/Mario-Python-Game">Mario-Python-Game</a> repo — same tile-map levels, same physics.</p>
+  <div class="card">
+    <canvas id="game" width="960" height="320"></canvas>
+    <div class="controls">
+      <button class="btn" id="resetBtn">↺ Reset level</button>
+      <button class="btn ghost" id="autoBtn">🤖 Auto-play</button>
+      <select id="levelSel" class="btn ghost" style="background:#1a2140;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:.5rem;">
+        <option value="level_1">Level 1</option>
+        <option value="level_2">Level 2</option>
+      </select>
+      <span class="hud">Score: <b id="score">0</b> &nbsp; Time: <b id="time">0.0</b>s &nbsp; <span id="status"></span></span>
+    </div>
+    <p class="keys">Controls: <b>← →</b> move · <b>Space</b> jump · <b>R</b> reset · <b>A</b> auto-play</p>
+  </div>
+</div>
+<script>
+const LEVELS = {
+  level_1: [
+    "........................................",
+    "........................................",
+    "........................................",
+    "........................................",
+    "........................................",
+    "..............@@@....@@@.................",
+    "....@@.......#####...#####...@...........",
+    "...P...@@....#####...#####..#####........",
+    "###############################F.........",
+    "########################################",
+  ],
+  level_2: [
+    "........................................",
+    "........................................",
+    "........................................",
+    "........................................",
+    "........................................",
+    ".............@@@.......@@@......@@@......",
+    "...........####........####......####....",
+    "..@........####...@....####......####..@.",
+    "..##...P...####........####......####.F..",
+    "########################################",
+  ],
+};
+
+const TILE = 32;
+const GRAVITY = 900, JUMP = -520, SPEED = 220;
+const PW = 26, PH = 30;
+
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+let tiles = [], coins = [], player = {}, finish = null, spawn = null;
+let score = 0, time = 0, won = false, running = false, autoplay = false;
+let keys = {};
+
+function loadLevel(name) {
+  const rows = LEVELS[name];
+  tiles = []; coins = []; finish = null;
+  for (let j = 0; j < rows.length; j++) {
+    for (let i = 0; i < rows[j].length; i++) {
+      const ch = rows[j][i], x = i * TILE, y = j * TILE;
+      if (ch === "#") tiles.push({x, y, w: TILE, h: TILE});
+      else if (ch === "@") coins.push({x: x + 6, y: y + 6, w: 20, h: 20});
+      else if (ch === "P") spawn = {x, y};
+      else if (ch === "F") finish = {x, y: y - 2 * TILE, w: TILE, h: 3 * TILE};
+    }
+  }
+  player = {x: spawn.x, y: spawn.y, vx: 0, vy: 0, w: PW, h: PH, onGround: false};
+  score = 0; time = 0; won = false;
+}
+
+function aabb(a, b) { return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y; }
+
+function update(dt) {
+  if (won) return;
+  time += dt;
+  const p = player;
+  p.vy += GRAVITY * dt;
+  p.x += p.vx * dt;
+  resolve("x");
+  p.y += p.vy * dt;
+  p.onGround = false;
+  resolve("y");
+  // coins
+  coins = coins.filter(c => { if (aabb(p, c)) { score += 100; return false; } return true; });
+  if (finish && aabb(p, finish)) { won = true; }
+}
+
+function resolve(axis) {
+  const p = player;
+  for (const t of tiles) {
+    if (aabb(p, t)) {
+      if (axis === "x") {
+        if (p.vx > 0) p.x = t.x - p.w; else if (p.vx < 0) p.x = t.x + t.w;
+        p.vx = 0;
+      } else {
+        if (p.vy > 0) { p.y = t.y - p.h; p.onGround = true; }
+        else if (p.vy < 0) p.y = t.y + t.h;
+        p.vy = 0;
+      }
+    }
+  }
+}
+
+function jump() { if (player.onGround) player.vy = JUMP; }
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // sky
+  ctx.fillStyle = "#87ceeb"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // tiles
+  ctx.fillStyle = "#784c1f";
+  for (const t of tiles) { ctx.fillRect(t.x, t.y, t.w, t.h); ctx.strokeStyle = "#5a3812"; ctx.strokeRect(t.x, t.y, t.w, t.h); }
+  // coins
+  for (const c of coins) { ctx.fillStyle = "#ffd700"; ctx.beginPath(); ctx.arc(c.x + 10, c.y + 10, 8, 0, 7); ctx.fill(); }
+  // finish flag
+  if (finish) { ctx.fillStyle = "#166534"; ctx.fillRect(finish.x + 12, finish.y, 6, finish.h); ctx.fillStyle = "#22c55e"; ctx.beginPath(); ctx.moveTo(finish.x + 18, finish.y); ctx.lineTo(finish.x + 42, finish.y + 10); ctx.lineTo(finish.x + 18, finish.y + 20); ctx.fill(); }
+  // player
+  ctx.fillStyle = "#e11d48"; ctx.fillRect(player.x, player.y, player.w, player.h);
+  ctx.fillStyle = "#fecaca"; ctx.fillRect(player.x + 4, player.y + 4, 8, 8);
+  // hud
+  document.getElementById("score").textContent = score;
+  document.getElementById("time").textContent = time.toFixed(1);
+  document.getElementById("status").textContent = won ? "🏁 LEVEL COMPLETE!" : (autoplay ? "🤖 auto-playing…" : "");
+}
+
+function blockedAhead() {
+  const p = player;
+  const probe = {x: p.x + p.w + 4, y: p.y + 2, w: 4, h: p.h - 4};
+  return tiles.some(t => aabb(probe, t));
+}
+function gapAhead() {
+  const p = player;
+  const probe = {x: p.x + p.w + 8, y: p.y + p.h + 6, w: 12, h: 6};
+  return !tiles.some(t => aabb(probe, t));
+}
+
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min((now - last) / 1000, 0.05);
+  last = now;
+  if (running) {
+    player.vx = 0;
+    if (keys["ArrowLeft"]) player.vx = -SPEED;
+    if (keys["ArrowRight"]) player.vx = SPEED;
+    if (keys[" "]) jump();
+    if (autoplay) {
+      player.vx = SPEED;
+      const nearFlag = finish && player.x > finish.x - 130;
+      if (blockedAhead() || (player.onGround && gapAhead() && !nearFlag)) jump();
+    }
+    update(dt);
+  }
+  draw();
+  requestAnimationFrame(frame);
+}
+
+document.getElementById("resetBtn").onclick = () => { running = true; autoplay = false; loadLevel(document.getElementById("levelSel").value); };
+document.getElementById("autoBtn").onclick = () => { autoplay = !autoplay; running = true; document.getElementById("autoBtn").textContent = autoplay ? "⏸ Stop auto" : "🤖 Auto-play"; };
+document.getElementById("levelSel").onchange = e => { loadLevel(e.target.value); running = true; };
+window.addEventListener("keydown", e => { keys[e.key] = true; if (e.key === "r") loadLevel(document.getElementById("levelSel").value); if (e.key === "a") document.getElementById("autoBtn").click(); });
+window.addEventListener("keyup", e => { keys[e.key] = false; });
+loadLevel("level_1");
+running = true;
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
